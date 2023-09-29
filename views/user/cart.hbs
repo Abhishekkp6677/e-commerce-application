@@ -1,0 +1,33 @@
+<div class="container">
+    <table class="table mt-5">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {{#each products}}
+            <tr>
+               
+                <td><img src="/product-images/{{this.product._id}}.png" style="height: 50px; width:auto"></img></td>
+                <td>{{this.product.name}}</td>
+                <td>{{this.product.price}}</td>
+                
+                <td><button class="btn btn-dark mx-3" onclick="changeCount('{{this._id}}','{{this.product._id}}',-1,'{{../user._id}}')">-</button>
+                <span id="{{this.product._id}}">{{this.quantity}}</span>
+                <button class="btn btn-dark mx-3" onclick="changeCount('{{this._id}}','{{this.product._id}}',1,'{{../user._id}}')">+</button></td>
+                <td><button  class="btn btn-danger" onclick="remove('{{this._id}}','{{this.product._id}}')">Remove</button></td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    <div class="float-end d-flex flex-column justify-content-evenly p-5">
+        <h4 class="">total:<span id="total">{{total}}</span></h4>
+        <a href="/place-order" class="btn btn-success">Place Order</a>
+
+    </div>
+</div>
