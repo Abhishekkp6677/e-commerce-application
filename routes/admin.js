@@ -11,46 +11,50 @@ const verifyLogin = (req, res, next) => {
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-  if (req.session.adminloggedIn) {
-    productHelpers.getAllProducts().then((products) => {
+    productHelpers.getAllProducts().then((products)=>{
       res.render('admin/view-products', { admin: true, products })
     })
-  } else {
-    res.redirect('admin/admin-login')
-  }
+
+  // if (req.session.adminloggedIn) {
+  //   productHelpers.getAllProducts().then((products) => {
+  //     res.render('admin/view-products', { admin: true, products })
+  //   })
+  // } else {
+  //   res.redirect('admin/admin-login')
+  // }
 });
 
-router.get('/admin-login', (req, res) => {
-  if (req.session.adminloggedIn) {
-    res.redirect('/admin')
-  } else {
-    res.render('admin/admin-login', { loginErr: req.session.adminloginErr, admin: true })
-  }
-})
+// router.get('/admin-login', (req, res) => {
+//   if (req.session.adminloggedIn) {
+//     res.redirect('/admin')
+//   } else {
+//     res.render('admin/admin-login', { loginErr: req.session.adminloginErr, admin: true })
+//   }
+// })
 
-router.post('/admin-login', (req, res) => {
-  //console.log(req.body)
-  productHelpers.AdminLogin(req.body).then((response) => {
-    console.log(response)
-    if (response.status) {
-      req.session.admin = response.admin
-      req.session.adminloggedIn = true;
-      res.redirect('/admin')
-    } else {
-      req.session.adminloginErr = "invalid username or password"
-      res.redirect('/admin/admin-login')
-    }
-  })
-})
+// router.post('/admin-login', (req, res) => {
+//   //console.log(req.body)
+//   productHelpers.AdminLogin(req.body).then((response) => {
+//     console.log(response)
+//     if (response.status) {
+//       req.session.admin = response.admin
+//       req.session.adminloggedIn = true;
+//       res.redirect('/admin')
+//     } else {
+//       req.session.adminloginErr = "invalid username or password"
+//       res.redirect('/admin/admin-login')
+//     }
+//   })
+// })
 
-router.get('/logout', (req, res) => {
-  req.session.admin = null
-  req.session.adminloggedIn = false
-  res.redirect('/admin/admin-login')
-  preventBack()
-})
+// router.get('/logout', (req, res) => {
+//   req.session.admin = null
+//   req.session.adminloggedIn = false
+//   res.redirect('/admin/admin-login')
+//   preventBack()
+// })
 
-router.get('/add-products', verifyLogin, function (req, res) {
+router.get('/add-products',  function (req, res) {
   res.render('admin/add-products')
 })
 
@@ -67,7 +71,7 @@ router.post('/add-products', function (req, res) {
   })
 })
 
-router.get('/delete-product', verifyLogin, (req, res) => {
+router.get('/delete-product',  (req, res) => {
   let proId = req.query.id
   //or router.get('/delete-product:id'),(.....)=>{
   //  let proId=req.params.id}
@@ -76,7 +80,7 @@ router.get('/delete-product', verifyLogin, (req, res) => {
   })
 })
 
-router.get('/edit-products', verifyLogin, async (req, res) => {
+router.get('/edit-products',  async (req, res) => {
   let product = await productHelpers.getProductDetails(req.query.id)
   res.render('admin/edit-products', { product })
 })
@@ -84,8 +88,11 @@ router.get('/edit-products', verifyLogin, async (req, res) => {
 router.post('/edit-products', (req, res) => {
   productHelpers.updateProductDetails(req.query.id, req.body).then(() => {
     res.redirect('/admin')
-    let image = req.files.image
-    image.mv('./public/product-images/' + req.query.id + '.png')
+    let image = req?.files?.image
+    if (image){
+
+      image.mv('./public/product-images/' + req.query.id + '.png')
+    }
   })
 })
 
